@@ -1,5 +1,5 @@
 
-
+// Function that gets Random word with Random Word Length
 
 function getWord(){
 const wordlength = Math.floor(Math.random() * (10 - 4 + 1) + 4);
@@ -12,7 +12,7 @@ return fetch(apiUrl).then(response => {
 };
 
 
-
+// Create arrays of HTML elements for Word Search Rows
 
 let wordId = [];
 
@@ -28,6 +28,9 @@ let row9 = [81,82,83,84,85,88,87,88,89,90];
 let row10 = [91,92,93,94,95,96,97,98,99,100];
 let rowarr = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10];
 
+
+// Create arrays of HTML elements for Word Search Columns
+
 let col1 = [1,11,21,31,41,51,61,71,81,91];
 let col2 = [2,12,22,32,42,52,62,72,82,92];
 let col3 = [3,13,23,33,43,53,63,73,83,93];
@@ -40,6 +43,8 @@ let col9 = [9,19,29,39,49,59,69,79,89,99];
 let col10 = [10,20,30,40,50,60,70,80,90,100];
 let columnarr = [col1, col2, col3, col4, col5, col6, col7, col8, col9, col10];
 
+// Function which fills table with random letters
+
 function fillTable(){
     for(let i = 1; i <= 100; i++){
         let rcell = document.getElementById(i);
@@ -49,6 +54,8 @@ function fillTable(){
        
     }
 };
+
+// Places Random Words into WordSearch Rows
 
 function WordPlace(wordarr, rowplace){
 let wordStart = Math.floor(Math.random() * (10 - wordarr.length))
@@ -63,6 +70,8 @@ for (i = idStart; i < (wordarr.length + idStart); i++){
    
 }
 }
+
+// Places random words into Columns 
 
 function WordPlaceColumn(wordarr, columnplace){
   let wordStart = Math.floor(Math.random() * (10 - wordarr.length))
@@ -82,6 +91,7 @@ function WordPlaceColumn(wordarr, columnplace){
 
 }
 
+// Function which decides row placement of word and calls API
 
 async function WordRow(){
   let freeRows =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -107,6 +117,8 @@ async function WordRow(){
   WordColumn();
 
 }
+
+// Function which decides column placement of word and calls API
 
 async function WordColumn(){
   let freeColumns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -139,10 +151,7 @@ function randomNumber(){
 };
 
 
-
-
 WordRow();
 
-console.log(wordId)
 
 
