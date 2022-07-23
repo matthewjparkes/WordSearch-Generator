@@ -2,7 +2,7 @@
 // Function that gets Random word with Random Word Length
 
 function getWord(){
-const wordlength = Math.floor(Math.random() * (10 - 4 + 1) + 4);
+const wordlength = Math.floor(Math.random() * (6 - 4 + 1) + 4);
 var apiUrl = `https://random-word-api.herokuapp.com/word?length=${wordlength}`;
 return fetch(apiUrl).then(response => {
   return response.json();
@@ -11,6 +11,12 @@ return fetch(apiUrl).then(response => {
   throw new error(errormsg)})
 };
 
+
+function getMultipleRandom(arr, num) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+
+  return shuffled.slice(0, num);
+};
 
 // Create arrays of HTML elements for Word Search Rows
 
@@ -59,32 +65,65 @@ function fillTable(){
 
 function WordPlace(wordarr, rowplace){
 let wordStart = Math.floor(Math.random() * (10 - wordarr.length))
-console.log(wordStart);
+
 let idStart = rowarr[rowplace][wordStart];
-console.log(idStart);
+
 for (i = idStart; i < (wordarr.length + idStart); i++){ 
    let gamecell = document.getElementById(i);
-   console.log(gamecell);
    gamecell.innerHTML = wordarr[i - idStart];
+   gamecell.style.color = "red";
    wordId.push(i);
+
    
 }
+}
+
+function letterchecker(){
+
 }
 
 // Places random words into Columns 
 
 function WordPlaceColumn(wordarr, columnplace){
-  let wordStart = Math.floor(Math.random() * (10 - wordarr.length))
+  let wordStart = Math.floor(Math.random() * (10 - wordarr.length));
 
-  let idStart = columnarr[columnplace][wordStart];
+  // let columnrow = columnplace;
+  // console.log(`row + ${columnrow}`);
+  // console.log(`This is the column array ${columnarr[columnrow]}`);
+  let newcolumnrow = null;
+  for(k = 0; k < columnarr.length ; k++){
+    if(newcolumnrow != null){
+      break;
+    }
+      for(j = 0 ; j < columnarr[k].length; j++ ){
+      console.log( columnarr[k].length);
+        if(wordId.includes(columnarr[k][j])){
+          console.log(`match ${k} + ${wordarr}`);
+          break;
+        }else{
+          if (j === ((columnarr[k].length)- 1)){
+            newcolumnrow = k;
+          }
+          console.log(`No Match ${k} + ${wordarr}`)
+        }
+      }
+   
+  }
+ 
+  
+  if(newcolumnrow === null){
+    return false;
+  }
+  let idStart = columnarr[newcolumnrow][wordStart];
   let letterposition = 0;
 
   console.log(idStart);
   for (i = idStart; i < (((wordarr.length)*10) + idStart); i+=10){ 
      let gamecell = document.getElementById(i);
-     console.log(gamecell);
      gamecell.innerHTML = wordarr[letterposition];
+     gamecell.style.color = 'red';
      letterposition++; 
+     wordId.push(i);
     
      
   }
@@ -95,12 +134,11 @@ function WordPlaceColumn(wordarr, columnplace){
 
 async function WordRow(){
   let freeRows =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  let rowplacement1 = Math.floor(Math.random() * (freeRows.length));
-  freeRows.splice(rowplacement1, 1);
-  let rowplacement2 = Math.floor(Math.random() * (freeRows.length));
-  freeRows.splice(rowplacement2, 1);
-  let rowplacement3 = Math.floor(Math.random() * (freeRows.length));
-  freeRows.splice(rowplacement3, 1);
+  let rowplacementarr = getMultipleRandom(freeRows, 3);
+  let rowplacement1 = rowplacementarr[0];
+  let rowplacement2 = rowplacementarr[1];
+  let rowplacement3 = rowplacementarr[2];
+
   let word1 = await getWord();
   let word2 = await getWord();
   let word3 = await getWord();
@@ -109,11 +147,12 @@ async function WordRow(){
   let word2arr = word2[0].split('');
   let word3arr = word3[0].split('');
   
-  console.log(word1arr);
+  console.log(word1, word2, word3);
   fillTable();
   WordPlace(word1arr, rowplacement1);
   WordPlace(word2arr, rowplacement2);
   WordPlace(word3arr, rowplacement3);
+  console.log(rowplacement1, rowplacement2, rowplacement3);
   WordColumn();
 
 }
@@ -140,18 +179,17 @@ async function WordColumn(){
 }
 
 
-console.log(` Hello ${rowarr[1][2]}`);
+// console.log(` Hello ${rowarr[1][2]}`);
 
 
-let cell = document.getElementById(1);
+// let cell = document.getElementById(1);
 
-function randomNumber(){
-    cell.innerHTML = `${Math.floor(Math.random()*10)}`;
-    console.log(cell.innerHTML);
-};
+// function randomNumber(){
+//     cell.innerHTML = `${Math.floor(Math.random()*10)}`;
+//     console.log(cell.innerHTML);
+// };
 
 
 WordRow();
-
 
 
