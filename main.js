@@ -85,23 +85,35 @@ function letterchecker(){
 // Places random words into Columns 
 
 function WordPlaceColumn(wordarr, columnplace){
-  let wordStart = Math.floor(Math.random() * (10 - wordarr.length));
+  
 
   // let columnrow = columnplace;
   // console.log(`row + ${columnrow}`);
   // console.log(`This is the column array ${columnarr[columnrow]}`);
   let newcolumnrow = null;
+  let columnPast = 0;
+  let lettermatcharr = [];
   for(k = 0; k < columnarr.length ; k++){
     if(newcolumnrow != null){
       break;
     }
+    columnPast = 0;
+    lettermatcharr=[];
+
       for(j = 0 ; j < columnarr[k].length; j++ ){
       console.log( columnarr[k].length);
         if(wordId.includes(columnarr[k][j])){
           console.log(`match ${k} + ${wordarr}`);
-          break;
+          lettermatcharr.push(j); 
+          if(columnPast >= wordarr.length){
+            newcolumnrow = k; 
+            
+          } else{ 
+          columnPast = 0;
+          }
         }else{
-          if (j === ((columnarr[k].length)- 1)){
+          columnPast ++
+          if (j === ((columnarr[k].length)- 1) && columnPast >= wordarr.length){
             newcolumnrow = k;
           }
           console.log(`No Match ${k} + ${wordarr}`)
@@ -114,6 +126,46 @@ function WordPlaceColumn(wordarr, columnplace){
   if(newcolumnrow === null){
     return false;
   }
+
+  let wordStart = Math.floor(Math.random() * (10 - wordarr.length));
+  if(lettermatcharr.length != 0){
+      for(i = 0; i < lettermatcharr.length; i++){
+        if(lettermatcharr.length === 1){
+          if(lettermatcharr[i] >= wordarr.length){
+            let wordStartRange = lettermatcharr[i] -= wordarr.length 
+            wordStart = Math.floor(Math.random() * wordStartRange)
+            break;
+          }else{
+            let wordStartRange = col1.length - (lettermatcharr[0] + wordarr.length); 
+            let wordStartRangeMulti = (Math.floor(Math.random() * wordStartRange));
+            wordStart = lettermatcharr[i] + (wordStartRangeMulti != 0 ? wordStartRangeMulti: 1);
+            break;
+          }
+        } else {
+          let matchDiff = (lettermatcharr[i] - (i > 0 ? (lettermatcharr[i - 1]): 0));
+          // If i is 1 and there are only 2 matches - this falls through
+          if(i === (lettermatcharr.length - 1)){
+              let EndDiff = (lettermatcharr.length) - lettermatcharr[i];
+              if( EndDiff >= wordarr.length){
+                let wordStartRange = EndDiff -= wordarr.length 
+                wordStart = lettermatcharr[i] + ((Math.floor(Math.random() * wordStartRange))+1)
+                break;
+              }
+          }
+          if (matchDiff >= wordarr.length){
+            let wordStartRange = matchDiff -= wordarr.length 
+            wordStart = (i > 0 ? lettermatcharr[i - 1]: 0) + ((Math.floor(Math.random() * wordStartRange))+1)
+            break;
+          }
+        }
+
+      }
+
+    }
+    console.log(wordStart);
+    console.log(newcolumnrow);
+
+
   let idStart = columnarr[newcolumnrow][wordStart];
   let letterposition = 0;
 
@@ -133,22 +185,22 @@ function WordPlaceColumn(wordarr, columnplace){
 // Function which decides row placement of word and calls API
 
 async function WordRow(){
+  wordId = [];
+  fillTable();
   let freeRows =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   let rowplacementarr = getMultipleRandom(freeRows, 3);
   let rowplacement1 = rowplacementarr[0];
   let rowplacement2 = rowplacementarr[1];
   let rowplacement3 = rowplacementarr[2];
-
   let word1 = await getWord();
   let word2 = await getWord();
   let word3 = await getWord();
   console.log(await word1[0]);
-  let word1arr = word1[0].split('');
-  let word2arr = word2[0].split('');
-  let word3arr = word3[0].split('');
   
+  let word1arr = word1[0].toUpperCase().split('');
+  let word2arr = word2[0].toUpperCase().split('');
+  let word3arr = word3[0].toUpperCase().split('');
   console.log(word1, word2, word3);
-  fillTable();
   WordPlace(word1arr, rowplacement1);
   WordPlace(word2arr, rowplacement2);
   WordPlace(word3arr, rowplacement3);
@@ -170,9 +222,9 @@ async function WordColumn(){
   let word4 = await getWord();
   let word5 = await getWord();
   let word6 = await getWord();
-  let word4arr = word4[0].split('');
-  let word5arr = word5[0].split('');
-  let word6arr = word6[0].split('');
+  let word4arr = word4[0].toUpperCase().split('');
+  let word5arr = word5[0].toUpperCase().split('');
+  let word6arr = word6[0].toUpperCase().split('');
   WordPlaceColumn(word4arr, Columnplacement1);
   WordPlaceColumn(word5arr, Columnplacement2);
   WordPlaceColumn(word6arr, Columnplacement3);
@@ -191,5 +243,7 @@ async function WordColumn(){
 
 
 WordRow();
+
+document.getElementById("refresh").addEventListener("click", WordRow);
 
 
