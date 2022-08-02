@@ -1,15 +1,16 @@
-
-
+body{
+  
+  display: inline-block;
+  
+}
 
 
 table, tr, th, td {
     border: 1px solid black;
+    width: 25em;
   }
 
-table {
-width: 50%;
 
-}
 
 td{
     text-align: center;
@@ -29,4 +30,31 @@ td{
 
 .button:hover {
   background-color: darkcyan;
+}
+
+
+
+#wordsearch {
+  visibility: hidden;
+  display: inline-block;
+}
+
+#list-container {
+ display: inline-block;
+ position:relative;
+ bottom: 1em;
+ left: 1em;
+}
+
+#app {
+  display: flex;
+}
+
+.word{
+  font-weight: 600;
+}
+
+#guess-container {
+  top: 1em;
+  position: relative;
 }

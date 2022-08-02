@@ -8,8 +8,24 @@ return fetch(apiUrl).then(response => {
   return response.json();
 }).catch(errormsg => {
   alert('Connection Issues')
-  throw new error(errormsg)})
+  throw new Error(errormsg)})
 };
+
+function getDef(word){
+var apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+return  fetch(apiUrl).then(response =>{
+  return response.json();
+
+}).then(definition =>{
+  console.log(definition[0].meanings[0].definitions[0].definition);
+  return definition[0].meanings[0].definitions[0].definition;
+  
+})
+.catch(errormsg => {
+  console.log(errormsg);
+  // throw new Error(errormsg)
+})
+}
 
 
 function getMultipleRandom(arr, num) {
@@ -21,6 +37,7 @@ function getMultipleRandom(arr, num) {
 // Create arrays of HTML elements for Word Search Rows
 
 let wordId = [];
+let wordList = [];
 
 let row1 = [1,2,3,4,5,6,7,8,9,10];
 let row2 = [11,12,13,14,15,16,17,18,19,20];
@@ -57,6 +74,7 @@ function fillTable(){
       
         let rUnicode = Math.floor(Math.random() * (90 - 65 + 1) + 65);
         rcell.innerHTML = `${String.fromCharCode(rUnicode)}`;
+        rcell.style.color ='black';
        
     }
 };
@@ -185,6 +203,7 @@ function WordPlaceColumn(wordarr, columnplace){
 // Function which decides row placement of word and calls API
 
 async function WordRow(){
+  document.getElementById('wordsearch').style.visibility = 'hidden';
   wordId = [];
   fillTable();
   let freeRows =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -195,7 +214,15 @@ async function WordRow(){
   let word1 = await getWord();
   let word2 = await getWord();
   let word3 = await getWord();
-  console.log(await word1[0]);
+  wordList.push(word1[0])
+  wordList.push(word2[0])
+  wordList.push(word3[0])
+  let word1def = await getDef(word1[0]);
+  let word2def = await getDef(word2[0]);
+  let word3def = await getDef(word3[0]);
+  console.log(word1[0]);
+  console.log(word1def);
+  console.log(await word1);
   
   let word1arr = word1[0].toUpperCase().split('');
   let word2arr = word2[0].toUpperCase().split('');
@@ -205,7 +232,11 @@ async function WordRow(){
   WordPlace(word2arr, rowplacement2);
   WordPlace(word3arr, rowplacement3);
   console.log(rowplacement1, rowplacement2, rowplacement3);
-  WordColumn();
+  await WordColumn();
+  document.getElementById('wordsearch').style.visibility = 'visible';
+  document.getElementById('def1').innerHTML = (word1def != null ? word1def: 'No Definition Available');
+  document.getElementById('def2').innerHTML = (word2def != null ? word2def: 'No Definition Available');
+  document.getElementById('def3').innerHTML = (word3def != null ? word3def: 'No Definition Available');
 
 }
 
@@ -222,12 +253,21 @@ async function WordColumn(){
   let word4 = await getWord();
   let word5 = await getWord();
   let word6 = await getWord();
+  wordList.push(word4[0])
+  wordList.push(word5[0])
+  wordList.push(word6[0])
+  let word4def = await getDef(word4[0]);
+  let word5def = await getDef(word5[0]);
+  let word6def = await getDef(word6[0]);
   let word4arr = word4[0].toUpperCase().split('');
   let word5arr = word5[0].toUpperCase().split('');
   let word6arr = word6[0].toUpperCase().split('');
   WordPlaceColumn(word4arr, Columnplacement1);
   WordPlaceColumn(word5arr, Columnplacement2);
   WordPlaceColumn(word6arr, Columnplacement3);
+  document.getElementById('def4').innerHTML = (word4def != null ? word4def: 'No Definition Available');
+  document.getElementById('def5').innerHTML = (word5def != null ? word5def: 'No Definition Available');
+  document.getElementById('def6').innerHTML = (word6def != null ? word6def: 'No Definition Available');
 }
 
 
@@ -240,10 +280,27 @@ async function WordColumn(){
 //     cell.innerHTML = `${Math.floor(Math.random()*10)}`;
 //     console.log(cell.innerHTML);
 // };
+function wordchecker(){
+  let guess = document.getElementById('guesser').value;
+  if(wordList.includes(guess) ){
+    document.getElementById('outcome').innerHTML = 'You have found a word!'
+  }else{
+    document.getElementById('outcome').innerHTML = 'Guess again!'
+    console.log(wordList);
+  }
+}
+
 
 
 WordRow();
+let word1def = getDef('jingle');
+console.log(word1def[0]);
 
 document.getElementById("refresh").addEventListener("click", WordRow);
+document.getElementById('guesser').addEventListener("change", wordchecker)
+
+// To do => 
+// Debug + Clear table when refreshing
+// Make it look nice
 
 
