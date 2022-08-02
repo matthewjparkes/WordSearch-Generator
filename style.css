@@ -52,6 +52,7 @@ td{
 
 .word{
   font-weight: 600;
+  visibility: hidden;
 }
 
 #guess-container {
